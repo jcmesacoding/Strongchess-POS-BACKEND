@@ -1,14 +1,7 @@
 package com.cosodi.pos.dto;
 
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -17,47 +10,29 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ProviderDTO {
+
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotNull
-    private DocumentTypeDTO documentType;
-
-    @NotBlank
-    @Size(min = 8, max = 11)
-    private String documentNumber;
-
-    @NotNull
-    private PersonTypeDTO personType;
-
-    @NotBlank
+    @NotBlank(message = "El nombre de la empresa es requerido")
     @Size(min = 3, max = 100)
-    private String socialReason;
+    private String companyName;
 
-    @NotBlank
+    @NotBlank(message = "El nombre de contacto es requerido")
     @Size(min = 3, max = 100)
-    private String commercialName;
+    private String contactName;
 
-    @NotBlank
-    @Size(min = 3, max = 255)
-    private String address;
+    @NotBlank(message = "El teléfono es requerido")
+    @Size(min = 7, max = 20)
+    private String phone;
 
-    @Nullable
-    @Size(min = 6, max = 100)
-    private String phoneNumber;
-
-    @Email
-    @Size(max = 100)
+    @NotBlank(message = "El email es requerido")
+    @Email(message = "Debe ser un email válido")
     private String email;
 
-    @NotNull
-    private DepartmentDTO department;
-
-    @NotNull
-    private ProvinceDTO province;
-
-    @NotNull
-    private DistrictDTO district;
+    @NotBlank(message = "La dirección es requerida")
+    @Size(min = 5, max = 255)
+    private String address;
 
     private LocalDateTime registrationDate;
 }

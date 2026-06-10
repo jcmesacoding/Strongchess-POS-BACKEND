@@ -1,5 +1,6 @@
 package com.cosodi.pos.controller;
-
+import com.cosodi.pos.dto.LoginRequestDTO;
+import com.cosodi.pos.dto.LoginResponseDTO;
 import com.cosodi.pos.dto.RegisterRequest;
 import com.cosodi.pos.dto.RegisterResponse;
 import com.cosodi.pos.service.IAuthService;
@@ -20,5 +21,14 @@ public class AuthController {
     public ResponseEntity<RegisterResponse> registerUser(@Valid @RequestBody RegisterRequest request) {
         RegisterResponse response = authService.registerUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(
+            @Valid @RequestBody LoginRequestDTO request) {
+
+        return ResponseEntity.ok(
+                authService.login(request)
+        );
     }
 } 

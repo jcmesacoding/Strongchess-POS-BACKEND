@@ -1,29 +1,25 @@
 package com.cosodi.pos.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import jakarta.persistence.Column;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class SaleDetailDTO {
-    @JsonBackReference
-    @EqualsAndHashCode.Include
-    private SaleDTO sale;
 
-    @EqualsAndHashCode.Include
-    private ProductDTO product;
+    private Long id;
 
-    @NotNull
+    private Long productId;
+
+    private String productName;
+
     private Integer units;
 
-    @NotNull
     private BigDecimal salePrice;
 
-    @NotNull
     private BigDecimal discount;
+
+    @Column(nullable = false)
+    private BigDecimal total;
 }

@@ -24,7 +24,6 @@ public class Sale {
 	private Long id;
 
 	@Column(name = "sale_date", nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime saleDate;
 
 	@ManyToOne
@@ -50,6 +49,9 @@ public class Sale {
 
 	@OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<SaleDetail> details;
+
+	@Column(nullable = false)
+	private BigDecimal total;
 
 	@PrePersist
 	public void assignSaleDate() {

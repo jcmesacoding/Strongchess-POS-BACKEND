@@ -43,6 +43,13 @@ public class User {
     @Column(name = "registration_date", nullable = false)
     private LocalDateTime registrationDate;
 
+    @ManyToOne
+    @JoinColumn(
+            name = "employee_id",
+            foreignKey = @ForeignKey(name = "FK_USER_EMPLOYEE")
+    )
+    private Employee employee;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false,
