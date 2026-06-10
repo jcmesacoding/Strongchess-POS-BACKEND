@@ -234,6 +234,9 @@ Software Engineer • Full Stack Developer Journey
 GitHub:
 https://github.com/jcmesacoding
 
+Portfolio:
+https://jumedev.com
+
 ---
 
 ## Future Improvements
