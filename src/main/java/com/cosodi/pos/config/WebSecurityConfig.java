@@ -47,13 +47,16 @@ public class WebSecurityConfig {
                         ).permitAll()
 
                         .requestMatchers(
-                                "/api/v1/auth/login",
-                                "/api/v1/auth/register"
+                                "/api/v1/auth/login"
                         ).permitAll()
 
                         .requestMatchers(
                                 "/api/v1/public/**"
                         ).permitAll()
+
+                        .requestMatchers(
+                                "/api/v1/auth/register"
+                        ).hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 );

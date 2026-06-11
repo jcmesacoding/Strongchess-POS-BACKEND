@@ -1,5 +1,6 @@
 package com.cosodi.pos.dto;
 
+import com.cosodi.pos.util.RoleName;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -33,4 +34,6 @@ public class RegisterRequest {
     @NotBlank(message = "Last name is required")
     @Size(max = 50, message = "Last name must be less than 50 characters")
     private String lastName;
-} 
+
+    private RoleName role; // ADMIN, WRITE, READ
+}

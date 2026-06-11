@@ -39,8 +39,9 @@ public class AuthServiceImpl implements IAuthService {
             throw new UserAlreadyExistsException("Email already exists: " + request.getEmail());
         }
 
-        Role defaultRole = roleRepository.findByName(RoleName.READ)
-                .orElseThrow(() -> new RuntimeException("Default role not found"));
+        Role defaultRole = roleRepository.findByName(
+                request.getRole() != null ? request.getRole() : RoleName.READ
+        ).orElseThrow(() -> new RuntimeException("Role not found"));
 
         User newUser = new User(
                 request.getUsername(),
@@ -81,11 +82,14 @@ public class AuthServiceImpl implements IAuthService {
                         user.getUsername()
                 );
 
+        String role = user.getRoles().get(0).getName().name();
+
         return new LoginResponseDTO(
                 user.getUsername(),
                 token,
                 "Login successful",
-                true
+                true,
+                role
         );
     }
 } 
