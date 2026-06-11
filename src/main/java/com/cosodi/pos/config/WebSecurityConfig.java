@@ -56,7 +56,7 @@ public class WebSecurityConfig {
 
                         .requestMatchers(
                                 "/api/v1/auth/register"
-                        ).hasRole("ADMIN")
+                        ).hasAuthority("ADMIN")
 
                         .anyRequest().authenticated()
                 );
