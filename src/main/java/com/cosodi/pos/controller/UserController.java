@@ -1,5 +1,6 @@
 package com.cosodi.pos.controller;
 
+import com.cosodi.pos.dto.RegisterRequest;
 import com.cosodi.pos.dto.UserResponseDTO;
 import com.cosodi.pos.service.IUserService;
 import lombok.RequiredArgsConstructor;
