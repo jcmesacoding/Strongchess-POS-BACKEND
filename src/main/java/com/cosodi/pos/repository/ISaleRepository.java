@@ -1,14 +1,6 @@
 package com.cosodi.pos.repository;
 
-import com.cosodi.pos.dto.SalesByDayDTO;
-import com.cosodi.pos.dto.SalesByMonthDTO;
-import com.cosodi.pos.dto.TopCustomerDTO;
-import com.cosodi.pos.dto.TopProductDTO;
 import com.cosodi.pos.entity.Sale;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
