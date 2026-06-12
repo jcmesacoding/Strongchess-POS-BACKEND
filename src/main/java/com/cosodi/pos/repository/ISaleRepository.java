@@ -45,17 +45,4 @@ public interface ISaleRepository extends IGenericRepository<Sale, Long> {
             "ORDER BY SUM(sd.units) DESC")
     List<TopProductDTO> findTopProducts(Pageable pageable);
 
-    @Query("""
-            SELECT new com.cosodi.pos.dto.TopCustomerDTO(
-                COALESCE(c.socialReason,
-                         CONCAT(c.firstname, ' ', c.lastname)),
-                COUNT(s.id),
-                SUM(s.total)
-            )
-            FROM Sale s
-            JOIN s.customer c
-            GROUP BY c.id
-            ORDER BY SUM(s.total) DESC
-            """)
-    List<TopCustomerDTO> findTopCustomers(Pageable pageable);
 }
