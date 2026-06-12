@@ -67,22 +67,22 @@ public class DashboardController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/sales-by-day")
-    public ResponseEntity<List<SalesByDayDTO>> getSalesByDay() {
-        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
-        return ResponseEntity.ok(saleRepository.findSalesByDay(sevenDaysAgo));
-    }
-
-    @GetMapping("/sales-by-month")
-    public ResponseEntity<List<SalesByMonthDTO>> getSalesByMonth() {
-        int year = LocalDateTime.now().getYear();
-        return ResponseEntity.ok(saleRepository.findSalesByMonth(year));
-    }
-
-    @GetMapping("/top-products")
-    public ResponseEntity<List<TopProductDTO>> getTopProducts() {
-        return ResponseEntity.ok(
-                saleRepository.findTopProducts(PageRequest.of(0, 5))
-        );
-    }
+//    @GetMapping("/sales-by-day")
+//    public ResponseEntity<List<SalesByDayDTO>> getSalesByDay() {
+//        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+//        return ResponseEntity.ok(saleRepository.findSalesByDay(sevenDaysAgo));
+//    }
+//
+//    @GetMapping("/sales-by-month")
+//    public ResponseEntity<List<SalesByMonthDTO>> getSalesByMonth() {
+//        int year = LocalDateTime.now().getYear();
+//        return ResponseEntity.ok(saleRepository.findSalesByMonth(year));
+//    }
+//
+//    @GetMapping("/top-products")
+//    public ResponseEntity<List<TopProductDTO>> getTopProducts() {
+//        return ResponseEntity.ok(
+//                saleRepository.findTopProducts(PageRequest.of(0, 5))
+//        );
+//    }
 }
