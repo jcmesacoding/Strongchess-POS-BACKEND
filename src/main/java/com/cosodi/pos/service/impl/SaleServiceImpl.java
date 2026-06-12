@@ -7,6 +7,7 @@ import com.cosodi.pos.exception.ModelNotFoundException;
 import com.cosodi.pos.repository.*;
 import com.cosodi.pos.service.IInventoryMovementService;
 import com.cosodi.pos.service.ISaleService;
+import com.cosodi.pos.util.DebtStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ public class SaleServiceImpl extends CRUDImpl<Sale, Long>
     private final IEmployeeRepository employeeRepository;
     private final IVoucherTypeRepository voucherTypeRepository;
     private final IProductRepository productRepository;
+    private final IDebtRepository debtRepository;
 
     private final IInventoryMovementService inventoryMovementService;
 
@@ -136,6 +138,84 @@ public class SaleServiceImpl extends CRUDImpl<Sale, Long>
 
         sale.setTotal(total);
 
-        return iSaleRepository.save(sale);
+        sale.setDetails(details);
+
+        sale.setTaxAmount(BigDecimal.ZERO);
+
+        sale.setTotal(total);
+
+// Guardar primero la venta
+        sale = iSaleRepository.save(sale);
+
+// Crear deuda si aplica
+        if (
+                Boolean.TRUE.equals(
+                        request.getCreditSale()
+                )
+        ) {
+
+            BigDecimal paid =
+                    request.getInitialPayment() != null
+                            ? request.getInitialPayment()
+                            : BigDecimal.ZERO;
+
+            BigDecimal pending =
+                    sale.getTotal()
+                            .subtract(
+                                    paid
+                            );
+
+            Debt debt =
+                    new Debt();
+
+            debt.setCustomer(
+                    customer
+            );
+
+            debt.setSale(
+                    sale
+            );
+
+            debt.setTotalAmount(
+                    sale.getTotal()
+            );
+
+            debt.setPaidAmount(
+                    paid
+            );
+
+            debt.setPendingAmount(
+                    pending
+            );
+
+            debt.setDueDate(
+                    request.getDueDate()
+            );
+
+            debt.setStatus(
+
+                    pending.compareTo(
+                            BigDecimal.ZERO
+                    ) == 0
+
+                            ? DebtStatus.PAID
+
+                            : paid.compareTo(
+                            BigDecimal.ZERO
+                    ) > 0
+
+                            ? DebtStatus.PARTIAL
+
+                            : DebtStatus.PENDING
+
+            );
+
+            debtRepository.save(
+                    debt
+            );
+        }
+
+// retornar al final
+        return sale;
     }
 }

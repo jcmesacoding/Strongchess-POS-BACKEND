@@ -1,10 +1,13 @@
 package com.cosodi.pos.entity;
 
+import com.cosodi.pos.util.DebtStatus;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Data
 @Entity
 @Table(name = "debts")
 public class Debt {
