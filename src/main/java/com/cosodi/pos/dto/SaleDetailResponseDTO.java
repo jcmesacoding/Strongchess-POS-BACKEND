@@ -14,7 +14,7 @@ public class SaleDetailResponseDTO {
     private Integer units;
 
     private BigDecimal salePrice;
-
+zz
     private BigDecimal discount;
 
     private BigDecimal subtotal;

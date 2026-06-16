@@ -1,9 +1,11 @@
 package com.cosodi.pos.repository;
 
 import com.cosodi.pos.entity.Sale;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ISaleRepository extends IGenericRepository<Sale, Long> {
 
@@ -11,6 +13,28 @@ public interface ISaleRepository extends IGenericRepository<Sale, Long> {
             LocalDateTime startDate,
             LocalDateTime endDate
     );
+
+    @Override
+    @EntityGraph(
+            attributePaths = {
+                    "details",
+                    "details.product",
+                    "customer",
+                    "employee"
+            }
+    )
+    List<Sale> findAll();
+
+    @Override
+    @EntityGraph(
+            attributePaths = {
+                    "details",
+                    "details.product",
+                    "customer",
+                    "employee"
+            }
+    )
+    Optional<Sale> findById(Long id);
 
     List<Sale> findTop5ByOrderBySaleDateDesc();
 //    @Query("SELECT new com.cosodi.pos.dto.SalesByDayDTO(" +
@@ -35,5 +59,4 @@ public interface ISaleRepository extends IGenericRepository<Sale, Long> {
 //            "GROUP BY p.name " +
 //            "ORDER BY SUM(sd.units) DESC")
 //    List<TopProductDTO> findTopProducts(Pageable pageable);
-
 }

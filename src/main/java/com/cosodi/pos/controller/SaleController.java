@@ -26,19 +26,33 @@ public class SaleController {
     private final ModelMapper modelMapper;
 
     @PostMapping
-    public ResponseEntity<Void> save(@Valid @RequestBody SaleRequestDTO saleRequestDTO) {
-        // return new ResponseEntity<>(this.convertToDTO(this.iSaleService.saveTransactional(this.convertToEntity(saleDTO))), HttpStatus.OK);
+    public ResponseEntity<SaleResponseDTO> save(
+            @Valid
+            @RequestBody
+            SaleRequestDTO saleRequestDTO
+    ) {
+
         Sale createdSale =
-                this.iSaleService.registerSale(saleRequestDTO);
+                iSaleService.registerSale(
+                        saleRequestDTO
+                );
 
         URI location =
                 ServletUriComponentsBuilder
                         .fromCurrentRequest()
                         .path("/{id}")
-                        .buildAndExpand(createdSale.getId())
+                        .buildAndExpand(
+                                createdSale.getId()
+                        )
                         .toUri();
 
-        return ResponseEntity.created(location).build();
+        return ResponseEntity
+                .created(location)
+                .body(
+                        convertToResponseDTO(
+                                createdSale
+                        )
+                );
     }
 
     @GetMapping
@@ -72,7 +86,7 @@ public class SaleController {
         List<SaleResponseDTO> list =
                 iSaleService.findByDateRange(
                                 startDate.atStartOfDay(),
-                                endDate.atTime(23,59,59)
+                                endDate.atTime(23, 59, 59)
                         )
                         .stream()
                         .map(this::convertToResponseDTO)
