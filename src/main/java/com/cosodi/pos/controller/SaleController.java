@@ -26,33 +26,19 @@ public class SaleController {
     private final ModelMapper modelMapper;
 
     @PostMapping
-    public ResponseEntity<SaleResponseDTO> save(
-            @Valid
-            @RequestBody
-            SaleRequestDTO saleRequestDTO
-    ) {
-
+    public ResponseEntity<Void> save(@Valid @RequestBody SaleRequestDTO saleRequestDTO) {
+        // return new ResponseEntity<>(this.convertToDTO(this.iSaleService.saveTransactional(this.convertToEntity(saleDTO))), HttpStatus.OK);
         Sale createdSale =
-                iSaleService.registerSale(
-                        saleRequestDTO
-                );
+                this.iSaleService.registerSale(saleRequestDTO);
 
         URI location =
                 ServletUriComponentsBuilder
                         .fromCurrentRequest()
                         .path("/{id}")
-                        .buildAndExpand(
-                                createdSale.getId()
-                        )
+                        .buildAndExpand(createdSale.getId())
                         .toUri();
 
-        return ResponseEntity
-                .created(location)
-                .body(
-                        convertToResponseDTO(
-                                createdSale
-                        )
-                );
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping
@@ -86,7 +72,7 @@ public class SaleController {
         List<SaleResponseDTO> list =
                 iSaleService.findByDateRange(
                                 startDate.atStartOfDay(),
-                                endDate.atTime(23, 59, 59)
+                                endDate.atTime(23,59,59)
                         )
                         .stream()
                         .map(this::convertToResponseDTO)
@@ -116,54 +102,21 @@ public class SaleController {
         dto.setSaleDate(sale.getSaleDate());
 
         dto.setDetails(
-
-                sale.getDetails() == null
-
-                        ? List.of()
-
-                        : sale.getDetails()
+                sale.getDetails()
                         .stream()
                         .map(detail -> {
-
-                            SaleDetailResponseDTO item =
-                                    new SaleDetailResponseDTO();
-
-                            item.setProductId(
-                                    detail.getProduct().getId()
-                            );
-
-                            item.setProductName(
-                                    detail.getProduct().getName()
-                            );
-
-                            item.setUnits(
-                                    detail.getUnits()
-                            );
-
-                            item.setSalePrice(
-                                    detail.getSalePrice()
-                            );
-
-                            item.setDiscount(
-                                    detail.getDiscount()
-                            );
-
+                            SaleDetailResponseDTO item = new SaleDetailResponseDTO();
+                            item.setProductId(detail.getProduct().getId());
+                            item.setProductName(detail.getProduct().getName());
+                            item.setUnits(detail.getUnits());
+                            item.setSalePrice(detail.getSalePrice());
+                            item.setDiscount(detail.getDiscount());
                             item.setSubtotal(
-
                                     detail.getSalePrice()
-                                            .multiply(
-                                                    BigDecimal.valueOf(
-                                                            detail.getUnits()
-                                                    )
-                                            )
-                                            .subtract(
-                                                    detail.getDiscount()
-                                            )
-
+                                            .multiply(BigDecimal.valueOf(detail.getUnits()))
+                                            .subtract(detail.getDiscount())
                             );
-
                             return item;
-
                         })
                         .toList()
         );

@@ -47,7 +47,7 @@ public class Sale {
 	@JoinColumn(name = "customer_id", nullable = false, foreignKey = @ForeignKey(name = "FK_SALE_CUSTOMER"))
 	private Customer customer;
 
-	@OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<SaleDetail> details;
 
 	@Column(nullable = false)

@@ -138,6 +138,12 @@ public class SaleServiceImpl extends CRUDImpl<Sale, Long>
 
         sale.setTotal(total);
 
+        sale.setDetails(details);
+
+        sale.setTaxAmount(BigDecimal.ZERO);
+
+        sale.setTotal(total);
+
 // Guardar primero la venta
         sale = iSaleRepository.save(sale);
 
