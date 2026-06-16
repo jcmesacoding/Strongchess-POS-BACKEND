@@ -116,21 +116,54 @@ public class SaleController {
         dto.setSaleDate(sale.getSaleDate());
 
         dto.setDetails(
-                sale.getDetails()
+
+                sale.getDetails() == null
+
+                        ? List.of()
+
+                        : sale.getDetails()
                         .stream()
                         .map(detail -> {
-                            SaleDetailResponseDTO item = new SaleDetailResponseDTO();
-                            item.setProductId(detail.getProduct().getId());
-                            item.setProductName(detail.getProduct().getName());
-                            item.setUnits(detail.getUnits());
-                            item.setSalePrice(detail.getSalePrice());
-                            item.setDiscount(detail.getDiscount());
-                            item.setSubtotal(
-                                    detail.getSalePrice()
-                                            .multiply(BigDecimal.valueOf(detail.getUnits()))
-                                            .subtract(detail.getDiscount())
+
+                            SaleDetailResponseDTO item =
+                                    new SaleDetailResponseDTO();
+
+                            item.setProductId(
+                                    detail.getProduct().getId()
                             );
+
+                            item.setProductName(
+                                    detail.getProduct().getName()
+                            );
+
+                            item.setUnits(
+                                    detail.getUnits()
+                            );
+
+                            item.setSalePrice(
+                                    detail.getSalePrice()
+                            );
+
+                            item.setDiscount(
+                                    detail.getDiscount()
+                            );
+
+                            item.setSubtotal(
+
+                                    detail.getSalePrice()
+                                            .multiply(
+                                                    BigDecimal.valueOf(
+                                                            detail.getUnits()
+                                                    )
+                                            )
+                                            .subtract(
+                                                    detail.getDiscount()
+                                            )
+
+                            );
+
                             return item;
+
                         })
                         .toList()
         );
