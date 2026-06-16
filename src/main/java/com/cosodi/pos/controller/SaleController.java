@@ -26,19 +26,33 @@ public class SaleController {
     private final ModelMapper modelMapper;
 
     @PostMapping
-    public ResponseEntity<Void> save(@Valid @RequestBody SaleRequestDTO saleRequestDTO) {
-        // return new ResponseEntity<>(this.convertToDTO(this.iSaleService.saveTransactional(this.convertToEntity(saleDTO))), HttpStatus.OK);
+    public ResponseEntity<SaleResponseDTO> save(
+            @Valid
+            @RequestBody
+            SaleRequestDTO saleRequestDTO
+    ) {
+
         Sale createdSale =
-                this.iSaleService.registerSale(saleRequestDTO);
+                iSaleService.registerSale(
+                        saleRequestDTO
+                );
 
         URI location =
                 ServletUriComponentsBuilder
                         .fromCurrentRequest()
                         .path("/{id}")
-                        .buildAndExpand(createdSale.getId())
+                        .buildAndExpand(
+                                createdSale.getId()
+                        )
                         .toUri();
 
-        return ResponseEntity.created(location).build();
+        return ResponseEntity
+                .created(location)
+                .body(
+                        convertToResponseDTO(
+                                createdSale
+                        )
+                );
     }
 
     @GetMapping
@@ -72,7 +86,7 @@ public class SaleController {
         List<SaleResponseDTO> list =
                 iSaleService.findByDateRange(
                                 startDate.atStartOfDay(),
-                                endDate.atTime(23,59,59)
+                                endDate.atTime(23, 59, 59)
                         )
                         .stream()
                         .map(this::convertToResponseDTO)
@@ -81,102 +95,45 @@ public class SaleController {
         return ResponseEntity.ok(list);
     }
 
-    private SaleResponseDTO convertToResponseDTO(
-            Sale sale) {
+    private SaleResponseDTO convertToResponseDTO(Sale sale) {
 
-        SaleResponseDTO dto =
-                new SaleResponseDTO();
+        SaleResponseDTO dto = new SaleResponseDTO();
 
         dto.setId(sale.getId());
 
         String customerName;
-
         if (sale.getCustomer().getSocialReason() != null) {
             customerName = sale.getCustomer().getSocialReason();
         } else {
-            customerName =
-                    sale.getCustomer().getFirstname()
-                            + " "
-                            + sale.getCustomer().getLastname();
+            customerName = sale.getCustomer().getFirstname() + " " + sale.getCustomer().getLastname();
         }
 
         dto.setCustomerName(customerName);
+        dto.setEmployeeName(sale.getEmployee().getFirstname() + " " + sale.getEmployee().getLastname());
+        dto.setVoucherNumber(sale.getVoucherNumber());
+        dto.setVoucherSerie(sale.getVoucherSerie());
+        dto.setTotal(sale.getTotal());
+        dto.setSaleDate(sale.getSaleDate());
 
-        dto.setEmployeeName(
-                sale.getEmployee().getFirstname()
-                        + " "
-                        + sale.getEmployee().getLastname()
+        dto.setDetails(
+                sale.getDetails()
+                        .stream()
+                        .map(detail -> {
+                            SaleDetailResponseDTO item = new SaleDetailResponseDTO();
+                            item.setProductId(detail.getProduct().getId());
+                            item.setProductName(detail.getProduct().getName());
+                            item.setUnits(detail.getUnits());
+                            item.setSalePrice(detail.getSalePrice());
+                            item.setDiscount(detail.getDiscount());
+                            item.setSubtotal(
+                                    detail.getSalePrice()
+                                            .multiply(BigDecimal.valueOf(detail.getUnits()))
+                                            .subtract(detail.getDiscount())
+                            );
+                            return item;
+                        })
+                        .toList()
         );
-
-//        dto.setVoucherType(
-//                sale.getVoucherType().getDescription()
-//        );
-
-        dto.setVoucherNumber(
-                sale.getVoucherNumber()
-        );
-
-        dto.setVoucherSerie(
-                sale.getVoucherSerie()
-        );
-
-//        dto.setTaxAmount(
-//                sale.getTaxAmount()
-//        );
-
-        dto.setTotal(
-                sale.getTotal()
-        );
-
-        dto.setSaleDate(
-                sale.getSaleDate()
-        );
-
-//        dto.setDetails(
-//                sale.getDetails()
-//                        .stream()
-//                        .map(detail -> {
-//
-//                            SaleDetailResponseDTO item =
-//                                    new SaleDetailResponseDTO();
-//
-//                            item.setProductId(
-//                                    detail.getProduct().getId()
-//                            );
-//
-//                            item.setProductName(
-//                                    detail.getProduct().getName()
-//                            );
-//
-//                            item.setUnits(
-//                                    detail.getUnits()
-//                            );
-//
-//                            item.setSalePrice(
-//                                    detail.getSalePrice()
-//                            );
-//
-//                            item.setDiscount(
-//                                    detail.getDiscount()
-//                            );
-//
-//                            item.setSubtotal(
-//                                    detail.getSalePrice()
-//                                            .multiply(
-//                                                    BigDecimal.valueOf(
-//                                                            detail.getUnits()
-//                                                    )
-//                                            )
-//                                            .subtract(
-//                                                    detail.getDiscount()
-//                                            )
-//                            );
-//
-//                            return item;
-//
-//                        })
-//                        .toList()
-//        );
 
         return dto;
     }
