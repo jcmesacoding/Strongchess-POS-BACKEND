@@ -8,13 +8,11 @@ import java.util.List;
 
 public interface ISaleRepository extends IGenericRepository<Sale, Long> {
 
-    // 1. Soluciona el GET /api/v1/sales (findAll)
     @Override
-    @EntityGraph(attributePaths = {"details", "customer", "employee"})
+    @EntityGraph(attributePaths = {"details", "details.product", "customer", "employee"})
     List<Sale> findAll();
 
-    // 2. Soluciona el GET /api/v1/sales/search (searchByDate)
-    @EntityGraph(attributePaths = {"details", "customer", "employee"})
+    @EntityGraph(attributePaths = {"details", "details.product", "customer", "employee"})
     List<Sale> findBySaleDateBetween(LocalDateTime start, LocalDateTime end);
 
     List<Sale> findTop5ByOrderBySaleDateDesc();
