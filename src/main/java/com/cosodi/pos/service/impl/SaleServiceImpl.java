@@ -208,8 +208,14 @@ public class SaleServiceImpl extends CRUDImpl<Sale, Long>
                     debt
             );
         }
-
 // retornar al final
         return sale;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Sale findById(Long id) {
+        return iSaleRepository.findById(id)
+                .orElseThrow(() -> new ModelNotFoundException("Sale not found"));
     }
 }

@@ -1,15 +1,21 @@
 package com.cosodi.pos.repository;
 
 import com.cosodi.pos.entity.Sale;
+import org.springframework.data.jpa.repository.EntityGraph;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ISaleRepository extends IGenericRepository<Sale, Long> {
 
-    List<Sale> findBySaleDateBetween(
-            LocalDateTime startDate,
-            LocalDateTime endDate
-    );
+    // 1. Soluciona el GET /api/v1/sales (findAll)
+    @Override
+    @EntityGraph(attributePaths = {"details", "customer", "employee"})
+    List<Sale> findAll();
+
+    // 2. Soluciona el GET /api/v1/sales/search (searchByDate)
+    @EntityGraph(attributePaths = {"details", "customer", "employee"})
+    List<Sale> findBySaleDateBetween(LocalDateTime start, LocalDateTime end);
 
     List<Sale> findTop5ByOrderBySaleDateDesc();
 //    @Query("SELECT new com.cosodi.pos.dto.SalesByDayDTO(" +
