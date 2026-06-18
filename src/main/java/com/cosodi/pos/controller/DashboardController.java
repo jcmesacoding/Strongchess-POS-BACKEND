@@ -26,22 +26,31 @@ public class DashboardController {
     private final ISaleRepository saleRepository;
 
     @GetMapping
+    @org.springframework.transaction.annotation.Transactional(readOnly = true) // 1. Protege todo el método de caídas de sesión
     public ResponseEntity<DashboardResponseDTO> getDashboard() {
 
-        // 1. Calcular el valor total del inventario
+        // 1. Calcular el valor total del inventario de forma segura
         BigDecimal inventoryValue = productRepository.findAll()
                 .stream()
-                .map(product -> product.getPurchasePrice()
-                        .multiply(BigDecimal.valueOf(product.getCurrentStock())))
+                .map(product -> {
+                    BigDecimal price = product.getPurchasePrice() != null ? product.getPurchasePrice() : BigDecimal.ZERO;
+                    Integer stock = product.getCurrentStock() != null ? product.getCurrentStock() : 0;
+                    return price.multiply(BigDecimal.valueOf(stock));
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // 2. Extraer los productos con bajo stock (Menos de 5 unidades, por ejemplo)
+        // 2. Extraer los productos con bajo stock filtrando en memoria de forma segura
         List<?> lowStockProducts = productRepository.findAll()
                 .stream()
-                .filter(product -> product.getCurrentStock() <= 5)
+                .filter(product -> product.getCurrentStock() != null && product.getCurrentStock() <= 5)
+                .map(product -> new com.cosodi.pos.dto.LowStockProductResponse(
+                        product.getId(),
+                        product.getName(),
+                        product.getCurrentStock()
+                ))
                 .toList();
 
-        // 3. Extraer las últimas 5 ventas recientes ordenadas por fecha descendente
+        // 3. Extraer las últimas 5 ventas utilizando el ordenamiento seguro de Spring Data
         List<RecentSaleResponseDTO> recentSales = saleRepository.findAll(
                         PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "saleDate"))
                 ).getContent()
@@ -67,7 +76,7 @@ public class DashboardController {
                 })
                 .toList();
 
-        // 4. Armar la respuesta completa
+        // 4. Armar la respuesta final libre de proxies cíclicos de Hibernate
         DashboardResponseDTO response = new DashboardResponseDTO(
                 productRepository.count(),
                 customerRepository.count(),
