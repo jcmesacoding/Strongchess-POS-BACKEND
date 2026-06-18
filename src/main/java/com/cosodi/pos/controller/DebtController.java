@@ -24,62 +24,38 @@ public class DebtController {
             debtRepository;
 
     @GetMapping
-    public ResponseEntity<
-            List<DebtResponseDTO>
-            > getAll() {
+    public ResponseEntity<List<DebtResponseDTO>> getAll() {
 
-        List<
-                DebtResponseDTO
-                > result =
-
+        List<DebtResponseDTO> result =
                 debtRepository
                         .findAll()
                         .stream()
+                        .map(debt -> {
+                            // 1. Resolver el nombre del cliente dinámicamente
+                            String customerName = "Unknown Customer";
+                            if (debt.getCustomer() != null) {
+                                if (debt.getCustomer().getSocialReason() != null && !debt.getCustomer().getSocialReason().isEmpty()) {
+                                    customerName = debt.getCustomer().getSocialReason();
+                                } else {
+                                    customerName = debt.getCustomer().getFirstname() + " " + debt.getCustomer().getLastname();
+                                }
+                            }
 
-                        .map(
-
-                                debt ->
-
-                                        new DebtResponseDTO(
-
-                                                debt.getId(),
-
-                                                debt.getCustomer()
-                                                        .getSocialReason(),
-
-                                                debt.getSale()
-                                                        .getVoucherSerie()
-
-                                                        +
-
-                                                        "-"
-
-                                                        +
-
-                                                        debt.getSale()
-                                                                .getVoucherNumber(),
-
-                                                debt.getTotalAmount(),
-
-                                                debt.getPaidAmount(),
-
-                                                debt.getPendingAmount(),
-
-                                                debt.getDueDate(),
-
-                                                debt.getStatus()
-
-                                        )
-
-                        )
-
+                            // 2. Retornar el DTO con el nombre correcto mapeado
+                            return new DebtResponseDTO(
+                                    debt.getId(),
+                                    customerName, // <- Usamos la variable procesada
+                                    debt.getSale().getVoucherSerie() + "-" + debt.getSale().getVoucherNumber(),
+                                    debt.getTotalAmount(),
+                                    debt.getPaidAmount(),
+                                    debt.getPendingAmount(),
+                                    debt.getDueDate(),
+                                    debt.getStatus()
+                            );
+                        })
                         .toList();
 
-        return ResponseEntity
-                .ok(
-                        result
-                );
-
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping(
@@ -157,9 +133,7 @@ public class DebtController {
                     DebtStatus.PAID
             );
 
-        }
-
-        else {
+        } else {
 
             debt.setStatus(
                     DebtStatus.PARTIAL
