@@ -1,10 +1,6 @@
 package com.cosodi.pos.controller;
 
-import com.cosodi.pos.dto.DashboardResponseDTO;
-import com.cosodi.pos.dto.SalesByDayDTO;
-import com.cosodi.pos.dto.SalesByMonthDTO;
-import com.cosodi.pos.dto.TopProductDTO;
-import com.cosodi.pos.entity.Sale;
+import com.cosodi.pos.dto.*;
 import com.cosodi.pos.repository.ICustomerRepository;
 import com.cosodi.pos.repository.IProductRepository;
 import com.cosodi.pos.repository.ISaleRepository;
@@ -46,11 +42,32 @@ public class DashboardController {
                 .toList();
 
         // 3. Extraer las últimas 5 ventas recientes ordenadas por fecha descendente
-        List<Sale> recentSales = saleRepository.findAll(
-                PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "saleDate"))
-        ).getContent();
+        List<RecentSaleResponseDTO> recentSales = saleRepository.findAll(
+                        PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "saleDate"))
+                ).getContent()
+                .stream()
+                .map(sale -> {
+                    String customerName = "Unknown Customer";
+                    if (sale.getCustomer() != null) {
+                        if (sale.getCustomer().getSocialReason() != null && !sale.getCustomer().getSocialReason().isEmpty()) {
+                            customerName = sale.getCustomer().getSocialReason();
+                        } else {
+                            customerName = sale.getCustomer().getFirstname() + " " + sale.getCustomer().getLastname();
+                        }
+                    }
 
-        // 4. Armar la respuesta completa utilizando la clase DashboardResponseDTO que espera tu controlador
+                    return new RecentSaleResponseDTO(
+                            sale.getId(),
+                            sale.getVoucherSerie(),
+                            sale.getVoucherNumber(),
+                            customerName,
+                            sale.getTotal(),
+                            sale.getSaleDate()
+                    );
+                })
+                .toList();
+
+        // 4. Armar la respuesta completa
         DashboardResponseDTO response = new DashboardResponseDTO(
                 productRepository.count(),
                 customerRepository.count(),
