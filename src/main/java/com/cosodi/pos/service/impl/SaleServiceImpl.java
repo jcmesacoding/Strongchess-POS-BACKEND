@@ -182,9 +182,11 @@ public class SaleServiceImpl extends CRUDImpl<Sale, Long>
                     pending
             );
 
-            debt.setDueDate(
-                    request.getDueDate()
-            );
+            if (request.getDueDate() != null) {
+                debt.setDueDate(request.getDueDate());
+            } else {
+                debt.setDueDate(java.time.LocalDate.now().plusDays(30));
+            }
 
             debt.setStatus(
 
