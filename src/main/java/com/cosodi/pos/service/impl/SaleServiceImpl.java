@@ -216,7 +216,6 @@ public class SaleServiceImpl extends CRUDImpl<Sale, Long>
 
     @Override
     public Sale findById(Long id) {
-        // Llama a la consulta que trae todos los JOINs necesarios
         return iSaleRepository.findOneWithDetails(id)
                 .orElseThrow(() -> new com.cosodi.pos.exception.ModelNotFoundException("Sale not found with ID: " + id));
     }

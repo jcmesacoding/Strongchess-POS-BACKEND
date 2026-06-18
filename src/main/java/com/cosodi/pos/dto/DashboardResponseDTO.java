@@ -3,20 +3,12 @@ package com.cosodi.pos.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
-public record DashboardResponse(
-
+public record DashboardResponseDTO(
         Long totalProducts,
-
         Long totalCustomers,
-
         Long totalSales,
-
         BigDecimal inventoryValue,
-
-        List<TopProductResponse> topProducts,
-
-        List<RecentSaleResponse> recentSales,
-
-        List<LowStockProductResponse> lowStockProducts
-
+        List<?> topProducts,
+        List<?> recentSales,
+        List<?> lowStockProducts
 ) {}
