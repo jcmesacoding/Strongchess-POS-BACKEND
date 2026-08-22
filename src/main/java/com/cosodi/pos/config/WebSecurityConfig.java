@@ -58,6 +58,17 @@ public class WebSecurityConfig {
                                 "/api/v1/auth/register"
                         ).hasAuthority("ADMIN")
 
+                        // Frontend estatico (index.html, JS, CSS) y rutas del SPA -
+                        // siempre publico, la proteccion real esta en las llamadas
+                        // a /api/** via JWT, no en si se puede cargar la pagina
+                        .requestMatchers(
+                                "/", "/index.html", "/favicon.svg", "/_redirects",
+                                "/assets/**",
+                                "/login", "/users", "/profile", "/dashboard",
+                                "/products", "/inventory", "/sales", "/customers",
+                                "/debts", "/reports"
+                        ).permitAll()
+
                         .anyRequest().authenticated()
                 );
 

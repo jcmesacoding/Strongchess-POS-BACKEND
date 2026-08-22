@@ -35,7 +35,7 @@ public class Customer {
 	@JoinColumn(name = "document_type_id", nullable = false, foreignKey = @ForeignKey(name = "FK_CUSTOMER_DOCUMENT_TYPE"))
 	private DocumentType documentType;
 	
-	@Column(name = "document_number", unique = true, length = 11, nullable = false)
+	@Column(name = "document_number", unique = true, length = 11, nullable = true)
 	private String documentNumber;
 	
 	@ManyToOne
@@ -64,13 +64,13 @@ public class Customer {
 	@Temporal(TemporalType.DATE)
 	private Date birthdate;
 	
-	@Column(nullable = false, length = 255)
+	@Column(nullable = true, length = 255)
 	private String address;
 
 	@Column(name = "phone_number", nullable = true, length = 15)
 	private String phoneNumber;
 	
-	@Column(nullable = false, unique = true, length = 100)
+	@Column(nullable = true, unique = true, length = 100)
 	private String email;
 	
 	@ManyToOne

@@ -41,6 +41,10 @@ public interface ISaleRepository extends IGenericRepository<Sale, Long> {
             "FROM SaleDetail d JOIN d.product p GROUP BY p.name ORDER BY SUM(d.units) DESC")
     List<TopProductDTO> findTopProducts(Pageable pageable);
 
+    // 4. Suma el total de todas las ventas historicas (usado para calcular el efectivo en caja)
+    @Query("SELECT COALESCE(SUM(s.total), 0) FROM Sale s")
+    java.math.BigDecimal sumAllSales();
+
     @Override
     @EntityGraph(attributePaths = {"customer", "employee"})
     org.springframework.data.domain.Page<Sale> findAll(org.springframework.data.domain.Pageable pageable);

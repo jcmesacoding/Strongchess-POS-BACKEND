@@ -1,0 +1,1 @@
+import{r as e}from"./index-DweGC8gZ.js";var t={getAll(){return e.get(`/users`)},getMe(){return e.get(`/users/me`)},register(t){return e.post(`/auth/register`,t)},update(t,n){return e.put(`/users/${t}`,n)},delete(t){return e.delete(`/users/${t}`)}};export{t};

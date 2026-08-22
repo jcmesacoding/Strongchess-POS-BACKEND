@@ -9,6 +9,8 @@ public record DebtResponseDTO(
 
         Long id,
 
+        Long customerId,
+
         String customer,
 
         String voucher,

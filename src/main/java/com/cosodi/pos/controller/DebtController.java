@@ -44,6 +44,7 @@ public class DebtController {
                             // 2. Retornar el DTO con el nombre correcto mapeado
                             return new DebtResponseDTO(
                                     debt.getId(),
+                                    debt.getCustomer() != null ? debt.getCustomer().getId() : null,
                                     customerName, // <- Usamos la variable procesada
                                     debt.getSale().getVoucherSerie() + "-" + debt.getSale().getVoucherNumber(),
                                     debt.getTotalAmount(),
